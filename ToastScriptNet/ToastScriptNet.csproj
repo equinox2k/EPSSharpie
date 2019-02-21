@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{34B2C2E9-CAED-41EE-93A9-5468545628A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ToastScriptNet</RootNamespace>
+    <AssemblyName>ToastScriptNet</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SixLabors.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\SixLabors.Core.1.0.0-beta0007\lib\netstandard2.0\SixLabors.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\SixLabors.Fonts.1.0.0-beta0008\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.ImageSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\SixLabors.ImageSharp.1.0.0-dev002384\lib\net472\SixLabors.ImageSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.ImageSharp.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\SixLabors.ImageSharp.Drawing.1.0.0-dev002384\lib\netstandard2.0\SixLabors.ImageSharp.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Shapes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\SixLabors.Shapes.1.0.0-dev000112\lib\netstandard2.0\SixLabors.Shapes.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\ToastScript\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="com\softhub\ps\AbstractFontDecoder.cs" />
+    <Compile Include="com\softhub\ps\Any.cs" />
+    <Compile Include="com\softhub\ps\ArithOp.cs" />
+    <Compile Include="com\softhub\ps\ArrayOp.cs" />
+    <Compile Include="com\softhub\ps\ArrayType.cs" />
+    <Compile Include="com\softhub\ps\BoolOp.cs" />
+    <Compile Include="com\softhub\ps\BoolType.cs" />
+    <Compile Include="com\softhub\ps\CharSequenceType.cs" />
+    <Compile Include="com\softhub\ps\CompositeType.cs" />
+    <Compile Include="com\softhub\ps\ControlOp.cs" />
+    <Compile Include="com\softhub\ps\device\AbstractDevice.cs" />
+    <Compile Include="com\softhub\ps\device\Bitmap.cs" />
+    <Compile Include="com\softhub\ps\device\CacheDevice.cs" />
+    <Compile Include="com\softhub\ps\device\CacheEntry.cs" />
+    <Compile Include="com\softhub\ps\device\DefaultBitmap.cs" />
+    <Compile Include="com\softhub\ps\device\DefaultPageDevice.cs" />
+    <Compile Include="com\softhub\ps\device\Device.cs" />
+    <Compile Include="com\softhub\ps\device\DisplayListDevice.cs" />
+    <Compile Include="com\softhub\ps\device\FontInfo.cs" />
+    <Compile Include="com\softhub\ps\device\NullBitmap.cs" />
+    <Compile Include="com\softhub\ps\device\NullDevice.cs" />
+    <Compile Include="com\softhub\ps\device\PageDevice.cs" />
+    <Compile Include="com\softhub\ps\device\PageEvent.cs" />
+    <Compile Include="com\softhub\ps\device\PageEventListener.cs" />
+    <Compile Include="com\softhub\ps\DictOp.cs" />
+    <Compile Include="com\softhub\ps\DictStack.cs" />
+    <Compile Include="com\softhub\ps\DictType.cs" />
+    <Compile Include="com\softhub\ps\Enumerable.cs" />
+    <Compile Include="com\softhub\ps\ExStack.cs" />
+    <Compile Include="com\softhub\ps\FileOp.cs" />
+    <Compile Include="com\softhub\ps\FileType.cs" />
+    <Compile Include="com\softhub\ps\FilterType.cs" />
+    <Compile Include="com\softhub\ps\filter\AbstractCodec.cs" />
+    <Compile Include="com\softhub\ps\filter\ASCII85Codec.cs" />
+    <Compile Include="com\softhub\ps\filter\ASCIIHexCodec.cs" />
+    <Compile Include="com\softhub\ps\filter\BinaryCodec.cs" />
+    <Compile Include="com\softhub\ps\filter\Codec.cs" />
+    <Compile Include="com\softhub\ps\filter\EExecCodecFactory.cs" />
+    <Compile Include="com\softhub\ps\filter\RunLengthCodec.cs" />
+    <Compile Include="com\softhub\ps\filter\SubFileCodec.cs" />
+    <Compile Include="com\softhub\ps\FontDecoder.cs" />
+    <Compile Include="com\softhub\ps\FontIDType.cs" />
+    <Compile Include="com\softhub\ps\FontOp.cs" />
+    <Compile Include="com\softhub\ps\GraphicsState.cs" />
+    <Compile Include="com\softhub\ps\graphics\CharacterShape.cs" />
+    <Compile Include="com\softhub\ps\graphics\ClipInit.cs" />
+    <Compile Include="com\softhub\ps\graphics\ClipShape.cs" />
+    <Compile Include="com\softhub\ps\graphics\ColorCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\Command.cs" />
+    <Compile Include="com\softhub\ps\graphics\DisplayList.cs" />
+    <Compile Include="com\softhub\ps\graphics\Drawable.cs" />
+    <Compile Include="com\softhub\ps\graphics\FillCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\ImageCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\PaintCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\PenCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\Reusable.cs" />
+    <Compile Include="com\softhub\ps\graphics\ReusedObject.cs" />
+    <Compile Include="com\softhub\ps\graphics\ShapeCommand.cs" />
+    <Compile Include="com\softhub\ps\graphics\StrokeCommand.cs" />
+    <Compile Include="com\softhub\ps\GStack.cs" />
+    <Compile Include="com\softhub\ps\GStateOp.cs" />
+    <Compile Include="com\softhub\ps\GStateType.cs" />
+    <Compile Include="com\softhub\ps\ImageOp.cs" />
+    <Compile Include="com\softhub\ps\image\CMYKMultipleSourceDecoder.cs" />
+    <Compile Include="com\softhub\ps\image\CMYKPixelSource.cs" />
+    <Compile Include="com\softhub\ps\image\CMYKSingleSourceDecoder.cs" />
+    <Compile Include="com\softhub\ps\image\GrayPixelSource.cs" />
+    <Compile Include="com\softhub\ps\image\ImageDataProducer.cs" />
+    <Compile Include="com\softhub\ps\image\ImageDecoder.cs" />
+    <Compile Include="com\softhub\ps\image\PixelSourceFactory.cs" />
+    <Compile Include="com\softhub\ps\image\RGBMultipleSourceDecoder.cs" />
+    <Compile Include="com\softhub\ps\image\RGBPixelSource.cs" />
+    <Compile Include="com\softhub\ps\image\RGBSingleSourceDecoder.cs" />
+    <Compile Include="com\softhub\ps\IntegerType.cs" />
+    <Compile Include="com\softhub\ps\Interpreter.cs" />
+    <Compile Include="com\softhub\ps\Interval.cs" />
+    <Compile Include="com\softhub\ps\MarkType.cs" />
+    <Compile Include="com\softhub\ps\MatrixOp.cs" />
+    <Compile Include="com\softhub\ps\MiscOp.cs" />
+    <Compile Include="com\softhub\ps\NameType.cs" />
+    <Compile Include="com\softhub\ps\NullType.cs" />
+    <Compile Include="com\softhub\ps\NumberType.cs" />
+    <Compile Include="com\softhub\ps\OperatorType.cs" />
+    <Compile Include="com\softhub\ps\OpStack.cs" />
+    <Compile Include="com\softhub\ps\PathOp.cs" />
+    <Compile Include="com\softhub\ps\RealType.cs" />
+    <Compile Include="com\softhub\ps\ReflectionOperator.cs" />
+    <Compile Include="com\softhub\ps\ResourceOp.cs" />
+    <Compile Include="com\softhub\ps\SaveType.cs" />
+    <Compile Include="com\softhub\ps\Scanner.cs" />
+    <Compile Include="com\softhub\ps\Screen.cs" />
+    <Compile Include="com\softhub\ps\SpecialFileType.cs" />
+    <Compile Include="com\softhub\ps\Stack.cs" />
+    <Compile Include="com\softhub\ps\StackOp.cs" />
+    <Compile Include="com\softhub\ps\Stop.cs" />
+    <Compile Include="com\softhub\ps\Stoppable.cs" />
+    <Compile Include="com\softhub\ps\StringOp.cs" />
+    <Compile Include="com\softhub\ps\StringType.cs" />
+    <Compile Include="com\softhub\ps\Type0Decoder.cs" />
+    <Compile Include="com\softhub\ps\Type1Decoder.cs" />
+    <Compile Include="com\softhub\ps\Type3Decoder.cs" />
+    <Compile Include="com\softhub\ps\TypeOp.cs" />
+    <Compile Include="com\softhub\ps\Types.cs" />
+    <Compile Include="com\softhub\ps\util\Archive.cs" />
+    <Compile Include="com\softhub\ps\util\Cache.cs" />
+    <Compile Include="com\softhub\ps\util\CharStream.cs" />
+    <Compile Include="com\softhub\ps\util\CharWidth.cs" />
+    <Compile Include="com\softhub\ps\util\Console.cs" />
+    <Compile Include="com\softhub\ps\util\StreamAdapter.cs" />
+    <Compile Include="com\softhub\ps\VM.cs" />
+    <Compile Include="com\softhub\ps\VMOp.cs" />
+    <Compile Include="DateTimeHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringHelper.cs" />
+    <Compile Include="Stroke.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

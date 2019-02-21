@@ -11,4 +11,9 @@
   <ItemGroup>
     <ProjectReference Include="..\EPSSharpie\EPSSharpie.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Example.eps">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
