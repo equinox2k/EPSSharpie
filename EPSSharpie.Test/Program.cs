@@ -18,24 +18,23 @@ namespace EPSSharpie.Test
                 File.WriteAllBytes("Example.tif", epsDocument.TiffData);
             }
 
-            var result = File.ReadAllText("DecodeTest.txt");
-            result = result.Replace("\r", "");
-            result = result.Replace("\n", "");
-            var b = new Ascii85();
-            b.EnforceMarks = false;
-            var data = b.Decode(result);
-            File.WriteAllBytes("test.zip", data);
+            //var result = File.ReadAllText("DecodeTest.txt");
+            //result = result.Replace("\r", "");
+            //result = result.Replace("\n", "");
+            //var b = new Ascii85();
+            //b.EnforceMarks = false;
+            //var data = b.Decode(result);
 
-            var input = new MemoryStream(data);
-            var output = new MemoryStream();
-
-            var a = new Ionic.Zlib.GZipStream(input, Ionic.Zlib.CompressionMode.Decompress);
-            a.CopyTo(output);
+            //var input = new MemoryStream(data);
+            //var output = new MemoryStream();
+            //var a = new Ionic.Zlib.DeflateStream(input, Ionic.Zlib.CompressionMode.Decompress);
+            //a.CopyTo(output);
 
             Console.WriteLine(epsDocument.PostScriptData);
 
             //https://stackoverflow.com/questions/52173621/decoding-and-decompressing-ai9-datastream-within-eps-files
             //https://www.complang.tuwien.ac.at/ulrich/PS/operators.html
+            //https://www.complang.tuwien.ac.at/ulrich/PS/postscript.html
         }
     }
 }
