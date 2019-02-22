@@ -1,4 +1,5 @@
 ﻿using System;
+using ToastScriptNet;
 
 namespace com.softhub.ps.device
 {
@@ -28,13 +29,10 @@ namespace com.softhub.ps.device
 
 		private BufferedImage image;
 
-		public DefaultBitmap(int w, int h) : this(w, h, BufferedImage.TYPE_INT_ARGB)
-		{
-		}
 
-		public DefaultBitmap(int w, int h, int type)
+		public DefaultBitmap(int w, int h)
 		{
-			image = new BufferedImage(Math.Max(1, w), Math.Max(1, h), type);
+			image = new BufferedImage(Math.Max(1, w), Math.Max(1, h));
 		}
 
 		public virtual int Width
@@ -55,24 +53,25 @@ namespace com.softhub.ps.device
 
 		public virtual void draw(int x, int y, int color)
 		{
-			image.setRGB(x, y, color);
+            throw new NotImplementedException();
+			//image.setRGB(x, y, color);
 		}
 
 		public virtual void draw(int x, int y, Color color)
 		{
-			draw(x, y, color.RGB);
+			draw(x, y, color);
 		}
 
 		public virtual void drawImage(Graphics2D g, AffineTransform xform)
 		{
-			g.drawImage(image, xform, null);
+			g.drawImage(image, xform);
 		}
 
 		public virtual Image Image
 		{
 			get
 			{
-				return image;
+				return (Image)image;
 			}
 		}
 

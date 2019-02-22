@@ -1,4 +1,6 @@
-﻿namespace com.softhub.ps.device
+﻿using ToastScriptNet;
+
+namespace com.softhub.ps.device
 {
 	/// <summary>
 	/// Copyright 1998 by Christian Lehner.

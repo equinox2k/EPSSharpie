@@ -1,26 +1,27 @@
 ﻿namespace com.softhub.ps.filter
 {
-	/// <summary>
-	/// Copyright 1998 by Christian Lehner.
-	/// 
-	/// This file is part of ToastScript.
-	/// 
-	/// ToastScript is free software; you can redistribute it and/or modify
-	/// it under the terms of the GNU General Public License as published by
-	/// the Free Software Foundation; either version 2 of the License, or
-	/// (at your option) any later version.
-	/// 
-	/// ToastScript is distributed in the hope that it will be useful,
-	/// but WITHOUT ANY WARRANTY; without even the implied warranty of
-	/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	/// GNU General Public License for more details.
-	/// 
-	/// You should have received a copy of the GNU General Public License
-	/// along with ToastScript; if not, write to the Free Software
-	/// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	/// </summary>
+    using System;
+    /// <summary>
+    /// Copyright 1998 by Christian Lehner.
+    /// 
+    /// This file is part of ToastScript.
+    /// 
+    /// ToastScript is free software; you can redistribute it and/or modify
+    /// it under the terms of the GNU General Public License as published by
+    /// the Free Software Foundation; either version 2 of the License, or
+    /// (at your option) any later version.
+    /// 
+    /// ToastScript is distributed in the hope that it will be useful,
+    /// but WITHOUT ANY WARRANTY; without even the implied warranty of
+    /// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    /// GNU General Public License for more details.
+    /// 
+    /// You should have received a copy of the GNU General Public License
+    /// along with ToastScript; if not, write to the Free Software
+    /// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    /// </summary>
 
-	using CharStream = com.softhub.ps.util.CharStream;
+    using CharStream = com.softhub.ps.util.CharStream;
 
 	public class ASCII85Codec : AbstractCodec
 	{
@@ -30,8 +31,6 @@
 		private sbyte[] buffer = new sbyte[4];
 		private int count;
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void close() throws java.io.IOException
 		public override void close()
 		{
 			if (mode == com.softhub.ps.util.CharStream_Fields.WRITE_MODE)
@@ -49,8 +48,6 @@
 			}
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public int decode() throws java.io.IOException
 		public override int decode()
 		{
 			if (endOfData && count <= 0)
@@ -68,8 +65,6 @@
 			return buffer[--count];
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void encode(int c) throws java.io.IOException
 		public override void encode(int c)
 		{
 			if (count >= 3)
@@ -84,8 +79,6 @@
 			}
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: private void fillDecodingBuffer() throws java.io.IOException
 		private void fillDecodingBuffer()
 		{
 			int c, i = 0;
@@ -98,7 +91,7 @@
 					{
 						if ((i % 5) != 0)
 						{
-							throw new IOException("invalid z position");
+							throw new NotImplementedException("invalid z position");
 						}
 						i += 5;
 						m = 0;
@@ -111,19 +104,19 @@
 					{
 						if ((c = stream.getchar()) != '>')
 						{
-							throw new IOException("bad end of decoding character: " + c);
+							throw new NotImplementedException("bad end of decoding character: " + c);
 						}
 						endOfData = true;
 					}
 					else
 					{
-						throw new IOException("invalid character: " + c);
+						throw new NotImplementedException("invalid character: " + c);
 					}
 					if ((i % 5) == 0 || endOfData)
 					{
 						if (m >= (1L << 32))
 						{
-							throw new IOException("out of range: " + m);
+							throw new NotImplementedException("out of range: " + m);
 						}
 						buffer[count++] = unchecked((sbyte)(m & 255L));
 						buffer[count++] = unchecked((sbyte)((m >> 8) & 255L));
@@ -140,7 +133,7 @@
 				{
 					if ((c = stream.getchar()) != '>')
 					{
-						throw new IOException("bad end of decoding: " + c);
+						throw new NotImplementedException("bad end of decoding: " + c);
 					}
 					endOfData = true;
 				}

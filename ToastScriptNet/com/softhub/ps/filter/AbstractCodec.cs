@@ -31,32 +31,24 @@ namespace com.softhub.ps.filter
 		protected internal CharStream stream;
 		protected internal bool endOfData;
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void open(com.softhub.ps.util.CharStream stream, int mode) throws java.io.IOException
 		public virtual void open(CharStream stream, int mode)
 		{
 			this.stream = stream;
 			this.mode = mode;
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void close() throws java.io.IOException
 		public virtual void close()
 		{
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public int decode() throws java.io.IOException
 		public virtual int decode()
 		{
-			throw new IOException("not implemented");
+			throw new NotImplementedException("not implemented");
 		}
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-//ORIGINAL LINE: public void encode(int c) throws java.io.IOException
 		public virtual void encode(int c)
 		{
-			throw new IOException("not implemented");
+			throw new NotImplementedException("not implemented");
 		}
 
 		public virtual Type[] OptionalParameterTypes

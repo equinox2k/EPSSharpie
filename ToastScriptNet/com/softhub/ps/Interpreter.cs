@@ -134,31 +134,6 @@ namespace com.softhub.ps
 		internal int lineno;
 
 		/// <summary>
-		/// Construct a ps-interpreter.
-		/// </summary>
-		public Interpreter() : this(System.in, System.out)
-		{
-			if (!InstanceFieldsInitialized)
-			{
-				InitializeInstanceFields();
-				InstanceFieldsInitialized = true;
-			}
-		}
-
-		/// <summary>
-		/// Construct a ps-interpreter. </summary>
-		/// <param name="in"> the standard input stream </param>
-		/// <param name="out"> the standard output stream </param>
-		public Interpreter(Stream @in, Stream @out) : this(@in, @out, System.err)
-		{
-			if (!InstanceFieldsInitialized)
-			{
-				InitializeInstanceFields();
-				InstanceFieldsInitialized = true;
-			}
-		}
-
-		/// <summary>
 		/// Construct a ps-interpreter. </summary>
 		/// <param name="in"> the standard input stream </param>
 		/// <param name="out"> the standard output stream </param>

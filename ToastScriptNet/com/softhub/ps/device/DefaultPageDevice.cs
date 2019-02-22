@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ToastScriptNet;
 
 namespace com.softhub.ps.device
 {
@@ -75,7 +76,7 @@ namespace com.softhub.ps.device
 		/// <summary>
 		/// Create a new page device.
 		/// </summary>
-		public DefaultPageDevice() : this(612, 792, 1, Toolkit.DefaultToolkit.ScreenResolution)
+		public DefaultPageDevice() : this(612, 792, 1, 90)
 		{
 		}
 
@@ -325,7 +326,7 @@ namespace com.softhub.ps.device
 		protected internal override Rectangle2D cliprect()
 		{
 			float s = scale * dpi / 72;
-			return new Rectangle2D.Float(0, 0, s * width, s * height);
+			return new Rectangle2D(0, 0, s * width, s * height);
 		}
 
 		/// <returns> the device size </returns>
@@ -345,7 +346,7 @@ namespace com.softhub.ps.device
 		/// own bean descriptor. Any properties exposed here can be used in the
 		/// dictionary parameter to setpagedevice. </summary>
 		/// <returns> an array of properties </returns>
-		public override PropertyDescriptor[] PropertyDescriptors
+		public PropertyDescriptor[] PropertyDescriptors
 		{
 			get
 			{

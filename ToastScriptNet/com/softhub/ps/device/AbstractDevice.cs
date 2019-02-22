@@ -25,7 +25,7 @@ namespace com.softhub.ps.device
 
 	using Reusable = com.softhub.ps.graphics.Reusable;
 
-	public abstract class AbstractDevice : Device, BeanInfo
+	public abstract class AbstractDevice : Device
 	{
 		public abstract Dimension Size {get;}
 		public abstract float Scale {get;}
@@ -105,7 +105,7 @@ namespace com.softhub.ps.device
 		{
 			float widthlimit = Math.Max(0.001f, width);
 			float miterlimit = Math.Max(1, miter);
-			return new BasicStroke(widthlimit, cap, join, miterlimit, array, phase);
+			return new Stroke(widthlimit, cap, join, miterlimit, array, phase);
 		}
 
 		/// <summary>
@@ -119,13 +119,11 @@ namespace com.softhub.ps.device
 		}
 
 		/// <returns> a buffered image the size of the device for clipping </returns>
-		protected internal virtual Image createClipImage()
+		protected internal virtual BufferedImage createClipImage()
 		{
-
-			Dimension d = Size;
-			int w = Math.Max(1, d.width);
-			int h = Math.Max(1, d.height);
-			return new Image(w, h, BufferedImage.TYPE_BYTE_BINARY);
+			int w = Math.Max(1, Size.width);
+			int h = Math.Max(1, Size.height);
+            return new BufferedImage(w, h);
 		}
 
 		protected internal virtual Shape Clip
@@ -302,37 +300,14 @@ namespace com.softhub.ps.device
 			return value;
 		}
 
-		/// <returns> bean descriptor for this device </returns>
-		public virtual BeanDescriptor BeanDescriptor
-		{
-			get
-			{
-				return null;
-			}
-		}
 
-		/// <returns> property descriptors for this device </returns>
-		public virtual PropertyDescriptor[] PropertyDescriptors
-		{
-			get
-			{
-				return null;
-			}
-		}
+
 
 		public virtual int DefaultPropertyIndex
 		{
 			get
 			{
 				return -1;
-			}
-		}
-
-		public virtual EventSetDescriptor[] EventSetDescriptors
-		{
-			get
-			{
-				return null;
 			}
 		}
 
@@ -344,29 +319,14 @@ namespace com.softhub.ps.device
 			}
 		}
 
-		public virtual MethodDescriptor[] MethodDescriptors
-		{
-			get
-			{
-				return null;
-			}
-		}
 
-		public virtual BeanInfo[] AdditionalBeanInfo
-		{
-			get
-			{
-				return null;
-			}
-		}
 
 		public virtual Image getIcon(int iconKind)
 		{
 			return null;
 		}
 
-//JAVA TO C# CONVERTER WARNING: 'final' parameters are not available in .NET:
-//ORIGINAL LINE: public java.awt.Image loadImage(final String resourceName)
+
 		public virtual Image loadImage(string resourceName)
 		{
 			return null;

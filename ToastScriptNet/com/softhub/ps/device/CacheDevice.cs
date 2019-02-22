@@ -1,4 +1,5 @@
 ﻿using System;
+using ToastScriptNet;
 
 namespace com.softhub.ps.device
 {
@@ -170,7 +171,7 @@ namespace com.softhub.ps.device
 					show(charShape, ctm);
 				}
 			}
-			catch (NoninvertibleTransformException ex)
+			catch (Exception ex)
 			{
 				System.Console.Error.WriteLine("warning: " + ex);
 			}

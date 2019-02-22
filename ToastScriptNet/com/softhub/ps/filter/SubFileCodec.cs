@@ -27,7 +27,7 @@ namespace com.softhub.ps.filter
 	public class SubFileCodec : AbstractCodec
 	{
 
-		private static readonly Type[] PARAMETERS = new Type[] {typeof(Number), typeof(string)};
+		private static readonly Type[] PARAMETERS = new Type[] {typeof(int), typeof(string)};
 
 		private int count;
 		private char[] mark;
@@ -78,7 +78,7 @@ namespace com.softhub.ps.filter
 //ORIGINAL LINE: public void encode(int c) throws java.io.IOException
 		public override void encode(int c)
 		{
-			throw new IOException("SubFileCodec.encode not yet implemented");
+			throw new NotImplementedException("SubFileCodec.encode not yet implemented");
 		}
 
 		public override Type[] OptionalParameterTypes
@@ -93,7 +93,7 @@ namespace com.softhub.ps.filter
 		{
 			set
 			{
-				count = ((Number) value[0]).intValue();
+				count = ((int)value[0]);
 				mark = ((string) value[1]).ToCharArray();
 				buffer = new char[mark.Length];
 			}

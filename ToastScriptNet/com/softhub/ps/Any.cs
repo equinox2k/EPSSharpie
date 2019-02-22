@@ -235,7 +235,7 @@ namespace com.softhub.ps
 			}
 		}
 
-		protected internal virtual Any LineNo
+		protected internal virtual Any SetLineNo
 		{
 			set
 			{

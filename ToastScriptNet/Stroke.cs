@@ -9,6 +9,11 @@ namespace ToastScriptNet
 {
     public class Stroke
     {
+        public Stroke()
+        {
+
+        }
+
         public Stroke(float width, int cap, int join, float miter, float[] array, float phase)
         {
 
@@ -17,6 +22,10 @@ namespace ToastScriptNet
 
     public class AffineTransform
     {
+        public AffineTransform()
+        {
+
+        }
         public AffineTransform(float a, float b, float c, float d, float e, float f)
         {
 
@@ -60,15 +69,51 @@ namespace ToastScriptNet
 
     public class Rectangle2D : Shape
     {
+        public float Width => throw new NotImplementedException();
+
+        public float Height => throw new NotImplementedException();
+
+        public Rectangle2D Bounds2D => throw new NotImplementedException();
+
+        public Rectangle2D(float x, float y, float width, float height)
+        {
+
+        }
+
+        public Rectangle2D createUnion(Rectangle2D rectangle2D)
+        {
+            return null;
+        }
     }
 
-    public class Graphics2D
+    public class Graphics2D 
     {
         public Shape Clip;
-        
+
+        public int Width => throw new NotImplementedException();
+
+        public int Height => throw new NotImplementedException();
+
+        public Image Image => throw new NotImplementedException();
+
         public void clip(Shape shape)
         {
 
+        }
+
+        public void draw(int x, int y, int color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void draw(int x, int y, Color color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void drawImage(BufferedImage g, AffineTransform xform)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -83,12 +128,10 @@ namespace ToastScriptNet
         }
     }
 
-    public class Image
+    public class Image : BufferedImage
     {
-        public int width;
-        public int height;
-
-        public Image(int width, int height)
+        
+        public Image(int width, int height) : base(width, height)
         {
 
         }
@@ -104,6 +147,11 @@ namespace ToastScriptNet
         public Image Image => throw new NotImplementedException();
 
         public BufferedImage(int width, int height)
+        {
+
+        }
+
+        public void setRGB(int x, int y, Color color)
         {
 
         }
@@ -129,12 +177,12 @@ namespace ToastScriptNet
         }
     }
 
-    public class Point2D<T>
+    public class Point2D
     {
-        public T X;
-        public T Y;
+        public float X;
+        public float Y;
 
-        public Point2D(T x, T y)
+        public Point2D(float x, float y)
         {
 
         }
@@ -142,6 +190,9 @@ namespace ToastScriptNet
 
     public class PropertyDescriptor
     {
+        public PropertyDescriptor(string a, Type type)
+        {
 
+        }
     }
 }

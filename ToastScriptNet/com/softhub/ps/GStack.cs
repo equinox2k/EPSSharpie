@@ -20,20 +20,20 @@
 	/// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	/// </summary>
 
-	public class GStack : System.Collections.Stack
+	public class GStack : Stack
 	{
 
 		public GStack(int size) : base(size)
 		{
 		}
 
-		protected internal override int overflow()
+		protected internal int overflow()
 		{
-			this.remove(1);
+            this.Pop();
 			return Stoppable_Fields.LIMITCHECK;
 		}
 
-		protected internal override int underflow()
+		protected internal int underflow()
 		{
 			return Stoppable_Fields.INTERNALERROR;
 		}

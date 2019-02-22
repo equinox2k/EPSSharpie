@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 
 namespace com.softhub.ps
 {
@@ -22,7 +24,7 @@ namespace com.softhub.ps
 	/// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	/// </summary>
 
-	public class System.Collections.Stack : Stoppable, Types
+	public class Stack : Stoppable, Types
 	{
 
 		protected internal int size;
@@ -64,7 +66,7 @@ namespace com.softhub.ps
 		{
 			set
 			{
-				array[count_Renamed - 1].LineNo = value;
+                array[count_Renamed - 1].SetLineNo = value;
 			}
 		}
 
@@ -87,7 +89,7 @@ namespace com.softhub.ps
 				array[count_Renamed++] = any;
 				return any;
 			}
-			catch (CloneNotSupportedException)
+			catch (Exception ex)
 			{
 				throw new Stop(Stoppable_Fields.INTERNALERROR);
 			}
@@ -106,7 +108,7 @@ namespace com.softhub.ps
 			{
 				array[count_Renamed++] = (Any) any.clone();
 			}
-			catch (CloneNotSupportedException)
+			catch (Exception ex)
 			{
 				throw new Stop(Stoppable_Fields.INTERNALERROR, "Stack.push");
 			}
@@ -421,13 +423,13 @@ namespace com.softhub.ps
 		/// <summary>
 		/// Print string representation of object on the stack. </summary>
 		/// <param name="out"> the output stream </param>
-		public virtual void print(PrintStream @out)
+		public virtual void print(StringWriter stream)
 		{
 			for (int i = 0; i < count_Renamed; i++)
 			{
 				string val = escapeSpecialChars(array[i].ToString());
 				string type = array[i].typeName();
-				@out.println("" + (count_Renamed - i - 1) + ": " + val + " <" + type + ">");
+                stream.WriteLine("" + (count_Renamed - i - 1) + ": " + val + " <" + type + ">");
 			}
 		}
 

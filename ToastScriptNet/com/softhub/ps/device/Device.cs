@@ -1,5 +1,5 @@
 ﻿namespace com.softhub.ps.device
-{
+{ 
     using ToastScriptNet;
     /// <summary>
     /// Copyright 1998 by Christian Lehner.
@@ -66,12 +66,12 @@
 		/// <returns> the stroke </returns>
 		Stroke createStroke(float width, int cap, int join, float miter, float[] array, float phase);
 
-		/// <summary>
-		/// Create bitmap object. </summary>
-		/// <param name="width"> the width of the bitmap </param>
-		/// <param name="height"> the height of the bitmap </param>
-		/// <returns> the bitmap </returns>
-		Bitmap createBitmap(int width, int height);
+        /// <summary>
+        /// Create bitmap object. </summary>
+        /// <param name="width"> the width of the bitmap </param>
+        /// <param name="height"> the height of the bitmap </param>
+        /// <returns> the bitmap </returns>
+        Bitmap createBitmap(int width, int height);
 
 		/// <returns> the device matrix </returns>
 		AffineTransform DefaultMatrix {get;}

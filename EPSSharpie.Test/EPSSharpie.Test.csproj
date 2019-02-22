@@ -8,10 +8,17 @@
   <ItemGroup>
     <Folder Include="Specs\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Iconic.Zlib.Netstandard" Version="1.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EPSSharpie\EPSSharpie.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="DecodeTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Example.eps">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

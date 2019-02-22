@@ -1,4 +1,6 @@
-﻿namespace com.softhub.ps.util
+﻿using ToastScriptNet;
+
+namespace com.softhub.ps.util
 {
 	/// <summary>
 	/// Copyright 1998 by Christian Lehner.

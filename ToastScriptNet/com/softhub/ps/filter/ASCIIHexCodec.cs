@@ -1,26 +1,27 @@
 ﻿namespace com.softhub.ps.filter
 {
-	/// <summary>
-	/// Copyright 1998 by Christian Lehner.
-	/// 
-	/// This file is part of ToastScript.
-	/// 
-	/// ToastScript is free software; you can redistribute it and/or modify
-	/// it under the terms of the GNU General Public License as published by
-	/// the Free Software Foundation; either version 2 of the License, or
-	/// (at your option) any later version.
-	/// 
-	/// ToastScript is distributed in the hope that it will be useful,
-	/// but WITHOUT ANY WARRANTY; without even the implied warranty of
-	/// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	/// GNU General Public License for more details.
-	/// 
-	/// You should have received a copy of the GNU General Public License
-	/// along with ToastScript; if not, write to the Free Software
-	/// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	/// </summary>
+    using System;
+    /// <summary>
+    /// Copyright 1998 by Christian Lehner.
+    /// 
+    /// This file is part of ToastScript.
+    /// 
+    /// ToastScript is free software; you can redistribute it and/or modify
+    /// it under the terms of the GNU General Public License as published by
+    /// the Free Software Foundation; either version 2 of the License, or
+    /// (at your option) any later version.
+    /// 
+    /// ToastScript is distributed in the hope that it will be useful,
+    /// but WITHOUT ANY WARRANTY; without even the implied warranty of
+    /// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    /// GNU General Public License for more details.
+    /// 
+    /// You should have received a copy of the GNU General Public License
+    /// along with ToastScript; if not, write to the Free Software
+    /// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    /// </summary>
 
-	using CharStream = com.softhub.ps.util.CharStream;
+    using CharStream = com.softhub.ps.util.CharStream;
 
 	public class ASCIIHexCodec : AbstractCodec
 	{
@@ -57,12 +58,12 @@
 				{
 					if ((c0 = hexValue(c)) < 0)
 					{
-						throw new IOException("invalid (c0): " + c);
+						throw new NotImplementedException("invalid (c0): " + c);
 					}
 					c = stream.getchar();
 					if (c < 0)
 					{
-						throw new IOException("premature end of input");
+						throw new NotImplementedException("premature end of input");
 					}
 					if (c == '>')
 					{
@@ -73,7 +74,7 @@
 					{
 						if ((c1 = hexValue(c)) < 0)
 						{
-							throw new IOException("invalid (c1): " + c);
+							throw new NotImplementedException("invalid (c1): " + c);
 						}
 						return c0 * 16 + c1;
 					}

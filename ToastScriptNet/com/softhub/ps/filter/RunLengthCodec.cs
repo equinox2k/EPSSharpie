@@ -1,4 +1,6 @@
-﻿namespace com.softhub.ps.filter
+﻿using System;
+
+namespace com.softhub.ps.filter
 {
 	/// <summary>
 	/// Copyright 1998 by Christian Lehner.
@@ -51,7 +53,7 @@
 //ORIGINAL LINE: public void encode(int c) throws java.io.IOException
 		public override void encode(int c)
 		{
-			throw new IOException("RunLengthCodec.encode not yet implemented");
+			throw new Exception("RunLengthCodec.encode not yet implemented");
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
@@ -61,7 +63,7 @@
 			int i, n = stream.getchar();
 			if (n < 0 || n > 255)
 			{
-				throw new IOException("expecting length byte");
+				throw new Exception("expecting length byte");
 			}
 			if (n < 128)
 			{
@@ -71,7 +73,7 @@
 					int c = stream.getchar();
 					if (c < 0)
 					{
-						throw new IOException("unexpected end of sequence: " + i + ", " + n);
+						throw new Exception("unexpected end of sequence: " + i + ", " + n);
 					}
 					buffer[i] = (char) c;
 				}
@@ -82,7 +84,7 @@
 				int c = stream.getchar();
 				if (c < 0)
 				{
-					throw new IOException("unexpected end of replication");
+					throw new Exception("unexpected end of replication");
 				}
 				char cc = (char) c;
 				for (i = count - 1; i >= 0; i--)

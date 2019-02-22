@@ -1,4 +1,5 @@
 ﻿using System;
+using ToastScriptNet;
 
 namespace com.softhub.ps.graphics
 {
@@ -85,7 +86,19 @@ namespace com.softhub.ps.graphics
 			}
 		}
 
-		public override string ToString()
+        Rectangle2D Reusable.Bounds2D => throw new NotImplementedException();
+
+        public void draw(Graphics2D g)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void normalize(AffineTransform xform)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
 		{
 			return "character-shape<" + charCode + ">";
 		}

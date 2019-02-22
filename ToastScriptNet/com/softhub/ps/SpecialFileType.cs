@@ -25,9 +25,6 @@ namespace com.softhub.ps
 	public class SpecialFileType : FileType
 	{
 
-		public SpecialFileType(VM vm, string name, Stream stream) : base(vm, name, stream)
-		{
-		}
 
 		public SpecialFileType(VM vm, string name, Stream stream) : base(vm, name, stream)
 		{

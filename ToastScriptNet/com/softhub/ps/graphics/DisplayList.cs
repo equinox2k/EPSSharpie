@@ -1,4 +1,5 @@
 ﻿using System;
+using ToastScriptNet;
 
 namespace com.softhub.ps.graphics
 {
@@ -56,9 +57,9 @@ namespace com.softhub.ps.graphics
 			{
 				return (DisplayList) MemberwiseClone();
 			}
-			catch (CloneNotSupportedException)
+			catch (Exception)
 			{
-				throw new InternalError();
+				throw new Exception();
 			}
 		}
 
