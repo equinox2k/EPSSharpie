@@ -19,11 +19,22 @@ namespace EPSSharpie.PostScript
             Position = 0;
         }
 
-        public bool ReadChar(out char value)
+        public char PeekChar()
         {
-            value = _input[Position];
-            Position += 1;
-            return Position < Length;
+            if (Position < Length)
+            {
+                return _input[Position];
+            }
+            return '\0';
+        }
+
+        public char ReadChar()
+        {
+            if (Position < Length)
+            {
+                return _input[Position++];
+            }
+            return '\0';
         }
     }
 }

@@ -30,11 +30,15 @@ namespace EPSSharpie.Test
             //var a = new Ionic.Zlib.DeflateStream(input, Ionic.Zlib.CompressionMode.Decompress);
             //a.CopyTo(output);
 
-            Console.WriteLine(epsDocument.PostScriptData);
+            //Console.WriteLine(epsDocument.PostScriptData);
+
+            var interpreter = new Interpreter();
+            interpreter.Load(epsDocument.PostScriptData);
 
             //https://stackoverflow.com/questions/52173621/decoding-and-decompressing-ai9-datastream-within-eps-files
             //https://www.complang.tuwien.ac.at/ulrich/PS/operators.html
             //https://www.complang.tuwien.ac.at/ulrich/PS/postscript.html
+            //https://www-cdf.fnal.gov/offline/PostScript/PLRM3.pdf
         }
     }
 }

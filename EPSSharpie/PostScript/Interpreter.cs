@@ -49,20 +49,39 @@ namespace EPSSharpie.PostScript
 
         public void Load(string input)
         {
-            Parser parser = new Parser(new CharReader(input));
+            Parser parser = new Parser(input);
+            parser.OnComment += Parser_OnComment;
+            parser.OnToken += Parser_OnToken;
+            parser.OnXMP += Parser_OnXMP;
+            parser.Process();
+            var a = 1;
+            //while (parser.GetObject(out var objectBase))
+            //{
+            //    if (!objectBase.IsExecutable())
+            //    {
+            //        OperandStack.Push(objectBase);
+            //    }
+            //    else if (objectBase is NameObject)
+            //    {
+            //        var value = DictLookup(objectBase as NameObject);
+            //        value?.Invoke();
+            //    }                
+            //}
+        }
 
-            while (parser.GetObject(out var objectBase))
-            {
-                if (!objectBase.IsExecutable())
-                {
-                    OperandStack.Push(objectBase);
-                }
-                else if (objectBase is NameObject)
-                {
-                    var value = DictLookup(objectBase as NameObject);
-                    value?.Invoke();
-                }                
-            }
+        private void Parser_OnXMP(string data)
+        {
+            //Console.WriteLine($"XMP - {data}");
+        }
+
+        private void Parser_OnToken(Parser.Mode mode, string token)
+        {
+            Console.WriteLine($"{mode} - {token}");
+        }
+
+        private void Parser_OnComment(CommentType commentType, string comment)
+        {
+            //Console.WriteLine($"{commentType} - {comment}");
         }
     }
 }
