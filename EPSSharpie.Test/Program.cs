@@ -35,6 +35,7 @@ namespace EPSSharpie.Test
             var interpreter = new Interpreter();
             interpreter.Load(epsDocument.PostScriptData);
 
+
             //https://stackoverflow.com/questions/52173621/decoding-and-decompressing-ai9-datastream-within-eps-files
             //https://www.complang.tuwien.ac.at/ulrich/PS/operators.html
             //https://www.complang.tuwien.ac.at/ulrich/PS/postscript.html

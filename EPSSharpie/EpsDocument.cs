@@ -8,7 +8,7 @@ namespace EPSSharpie
     {
         public EpsHeader EpsHeader { get; private set; }
 
-        public string PostScriptData { get; private set; }
+        public byte[] PostScriptData { get; private set; }
 
         public byte[] WmfData { get; private set; }
 
@@ -34,7 +34,7 @@ namespace EPSSharpie
             };
 
             reader.BaseStream.Position = epsHeader.PostScriptOffset;
-            epsDocument.PostScriptData = Encoding.UTF8.GetString(reader.ReadBytes((int)epsHeader.PostScriptLength));
+            epsDocument.PostScriptData =reader.ReadBytes((int)epsHeader.PostScriptLength);
 
             reader.BaseStream.Position = epsHeader.WMFOffset;
             epsDocument.WmfData = reader.ReadBytes((int)epsHeader.WMFSize);

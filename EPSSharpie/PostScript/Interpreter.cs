@@ -1,6 +1,7 @@
 ﻿using EPSSharpie.PostScript.Objects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using static EPSSharpie.PostScript.Objects.ObjectBase;
 
@@ -14,6 +15,8 @@ namespace EPSSharpie.PostScript
 
     public class Interpreter
     {
+
+        private StringBuilder _log;
 
         public ScriptMode ScriptMode { get; private set; }
 
@@ -47,13 +50,14 @@ namespace EPSSharpie.PostScript
             _systemDictionary = builtIns.CreateDictionary(this);
         }
 
-        public void Load(string input)
+        public void Load(byte[] input)
         {
+            _log = new StringBuilder();
+
             Parser parser = new Parser(input);
-            parser.OnComment += Parser_OnComment;
             parser.OnToken += Parser_OnToken;
-            parser.OnXMP += Parser_OnXMP;
             parser.Process();
+            File.WriteAllText("C:\\Users\\ptribe\\Desktop\\Log.txt", _log.ToString());
             var a = 1;
             //while (parser.GetObject(out var objectBase))
             //{
@@ -69,19 +73,11 @@ namespace EPSSharpie.PostScript
             //}
         }
 
-        private void Parser_OnXMP(string data)
-        {
-            //Console.WriteLine($"XMP - {data}");
-        }
-
         private void Parser_OnToken(Parser.Mode mode, string token)
         {
+            _log.AppendLine($"{mode} - {token}");
             Console.WriteLine($"{mode} - {token}");
         }
 
-        private void Parser_OnComment(CommentType commentType, string comment)
-        {
-            //Console.WriteLine($"{commentType} - {comment}");
-        }
     }
 }

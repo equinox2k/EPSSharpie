@@ -6,36 +6,28 @@ using EPSSharpie.PostScript.Objects;
 
 namespace EPSSharpie.PostScript
 {
-    public enum CommentType
-    {
-        Header,
-        DSCComment,
-        Comment
-    }
 
     class Parser
     {
-        public delegate void CommentEvent(CommentType commentType, string comment);
-        public event CommentEvent OnComment;
 
         public delegate void TokenEvent(Mode mode, string token);
         public event TokenEvent OnToken;
-
-        public delegate void XMPEvent(string data);
-        public event XMPEvent OnXMP;
 
         public enum Mode
         {
             None,
             Token,
+            BeginMark,
+            EndMark,
             BeginArray,
             EndArray,
             BeginProcedure,
             EndProcedure,
+            XPacket,
+            Comment,
 
             Integer,
             String,
-            EscapeString,
             HexString,
             Real,
             Name
@@ -47,7 +39,7 @@ namespace EPSSharpie.PostScript
 
         private bool IsWhitespace(char c)
         {
-            return c == ' ' || c == '\t';
+            return c == ' ' || c == '\t' || c == '\r' || c == '\n';
         }
 
         private bool IsBeginArray(char c)
@@ -106,9 +98,9 @@ namespace EPSSharpie.PostScript
             return c == '+' || c == '-';
         }
 
-        private readonly string _input;
+        private readonly byte[] _input;
 
-        public Parser(string input)
+        public Parser(byte[] input)
         {
             _input = input;            
         }
@@ -116,66 +108,13 @@ namespace EPSSharpie.PostScript
         public void Process()
         {
             _processMode = Mode.None;
+            _stringBuilder = new StringBuilder();
             ProcessBuffer(new CharReader(_input));
         }
 
-        public void Processx()
-        {
-            bool xpacket = false;
-            var xpacketBuffer = new StringBuilder();
+     
 
-            _processMode = Mode.None;
-            _stringBuilder = new StringBuilder();
-            using (var stringReader = new StringReader(_input))
-            {
-                var continueProcessing = true;
-                var line = stringReader.ReadLine();
-                while (line != null && continueProcessing == true)
-                {
-                    try
-                    {
-                        if (string.IsNullOrWhiteSpace(line))
-                        {
-                            continue;
-                        }
-
-                        if (line.StartsWith("%"))
-                        {
-                            ProcessComment(line.Substring(1));
-                            continue;
-                        }
-
-                        if (line.StartsWith("<?xpacket begin="))
-                        {
-                            xpacket = true;
-                            continue;
-                        }
-                        else if (line.StartsWith("<?xpacket end="))
-                        {
-                            xpacket = false;
-                            OnXMP?.Invoke(xpacketBuffer.ToString());
-                            xpacketBuffer.Clear();
-                            continue;
-                        }
-
-                        if (xpacket)
-                        {
-                            xpacketBuffer.AppendLine(line);
-                        }
-                        else
-                        {
-            
-                        }
-                    }
-                    finally
-                    {
-                        line = stringReader.ReadLine();
-                    }
-                }
-            }            
-        }
-
-        private void ProcessBuffer()
+        private void FlushTokenBuffer()
         {
             if (_stringBuilder.Length > 0)
             {
@@ -204,6 +143,7 @@ namespace EPSSharpie.PostScript
             {
                 return false;
             }
+            FlushTokenBuffer();
             charReader.ReadChar();
             var textBuilder = new StringBuilder();
             while (true)
@@ -243,7 +183,7 @@ namespace EPSSharpie.PostScript
                     if (peekedChar == 't')
                     {
                         charReader.ReadChar();
-                        textBuilder.Append('\r');
+                        textBuilder.Append('\t');
                         continue;
                     }
                     if (peekedChar == 'b')
@@ -269,7 +209,7 @@ namespace EPSSharpie.PostScript
                 {
                     throw new Exception("Unexpected end of data.");
                 }
-                textBuilder.Append(charReader.ReadChar());
+                textBuilder.Append(character);
             }
         }
 
@@ -279,6 +219,7 @@ namespace EPSSharpie.PostScript
             {
                 return false;
             }
+            FlushTokenBuffer();
             charReader.ReadChar();
             var textBuilder = new StringBuilder();
             while (true)
@@ -286,7 +227,7 @@ namespace EPSSharpie.PostScript
                 var character = charReader.ReadChar();
                 if (character == '>')
                 {
-                    OnToken?.Invoke(Mode.String, textBuilder.ToString());
+                    OnToken?.Invoke(Mode.HexString, textBuilder.ToString());
                     return true;
                 }
                 else if (character == '\0')
@@ -295,7 +236,11 @@ namespace EPSSharpie.PostScript
                 }
                 else if (IsHexDigit(character))
                 {
-                    textBuilder.Append(charReader.ReadChar());
+                    textBuilder.Append(character);
+                }
+                else if (IsWhitespace(character))
+                {
+                    // Skip new line
                 }
                 else
                 {
@@ -304,93 +249,121 @@ namespace EPSSharpie.PostScript
             }
         }
 
-        private bool ProcessArray(CharReader charReader)
+        private bool ProcessXPacket(CharReader charReader)
         {
-            if (charReader.PeekChar() != '[')
+            if (!charReader.PeekLine().Equals("<?xpacket begin=\"ï»¿\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"))
             {
                 return false;
             }
+            FlushTokenBuffer();
+            charReader.ReadLine();
+            var textBuilder = new StringBuilder();
             while (true)
             {
-                OnToken?.Invoke(Mode.BeginArray, "");
-                var peekedChar = charReader.PeekChar();
-                if (peekedChar == ']')
+                var line = charReader.ReadLine();
+                if (line.Equals("<?xpacket end=\"w\"?>"))
                 {
-                    charReader.ReadChar();
-                    OnToken?.Invoke(Mode.EndArray, "");
+                    OnToken?.Invoke(Mode.XPacket, textBuilder.ToString());
                     return true;
                 }
-                else if (peekedChar == '\0')
+                else if (!string.IsNullOrEmpty(line))
                 {
-                    throw new Exception("Unexpected end of data.");
-                }
-                else
-                {
-                    ProcessBuffer(charReader);
-                }
+                    textBuilder.AppendLine(line);
+                }           
+            }        
+        }
+
+        private bool ProcessMark(CharReader charReader)
+        {
+            if (charReader.PeekString(2) == "<<")
+            {
+                FlushTokenBuffer();
+                charReader.ReadString(2);
+                OnToken?.Invoke(Mode.BeginArray, "");
+                return true;
             }
+            if (charReader.PeekString(2) == ">>")
+            {
+                FlushTokenBuffer();
+                charReader.ReadString(2);
+                OnToken?.Invoke(Mode.EndArray, "");
+                return true;
+            }
+            return false;
+        }
+
+        private bool ProcessArray(CharReader charReader)
+        {
+            if (charReader.PeekChar() == '[')
+            {
+                FlushTokenBuffer();
+                charReader.ReadChar();
+                OnToken?.Invoke(Mode.BeginArray, "");
+                return true;
+            }
+            if (charReader.PeekChar() == ']')
+            {
+                FlushTokenBuffer();
+                charReader.ReadChar();
+                OnToken?.Invoke(Mode.EndArray, "");
+                return true;
+            }
+            return false;
         }
 
         private bool ProcessProcedure(CharReader charReader)
         {
-            if (charReader.PeekChar() != '{')
+            if (charReader.PeekChar() == '{')
             {
-                return false;
-            }
-            while (true)
-            {
+                FlushTokenBuffer();
+                charReader.ReadChar();
                 OnToken?.Invoke(Mode.BeginProcedure, "");
-                var peekedChar = charReader.PeekChar();
-                if (peekedChar == '}')
-                {
-                    charReader.ReadChar();
-                    OnToken?.Invoke(Mode.EndProcedure, "");
-                    return true;
-                }
-                else if (peekedChar == '\0')
-                {
-                    throw new Exception("Unexpected end of data.");
-                }
-                else
-                {
-                    ProcessBuffer(charReader);
-                }
+                return true;
             }
+            if (charReader.PeekChar() == '}')
+            {
+                FlushTokenBuffer();
+                charReader.ReadChar();
+                OnToken?.Invoke(Mode.EndProcedure, "");
+                return true;
+            }
+            return false;
         }
 
         private bool ProcessComment(CharReader charReader)
         {
-            if (charReader.PeekChar() != '%')
+            if (!charReader.PeekLine().StartsWith("%"))
             {
                 return false;
             }
-            var textBuilder = new StringBuilder();
-            while (true)
-            {
-                var peekedChar = charReader.PeekChar();
-                if (peekedChar == '\r')
-                {
-                    charReader.ReadChar();
-                    OnToken?.Invoke(Mode.None, textBuilder.ToString());
-                    return true;
-                }
-                else if (peekedChar == '\0')
-                {
-                    throw new Exception("Unexpected end of data.");
-                }
-                else
-                {
-                    textBuilder.Append(charReader.ReadChar());
-                }
-            }
+            FlushTokenBuffer();
+            OnToken?.Invoke(Mode.Comment, charReader.ReadLine().Substring(1));
+            return true;
         }
 
         private void ProcessBuffer(CharReader charReader)
         {
+            var test = string.Empty;
             while (charReader.PeekChar() != '\0')
             {
 
                 if (ProcessComment(charReader))
+                {
+                    continue;
+                }
+                else if (ProcessXPacket(charReader))
+                {
+                    continue;
+                }
+                else if (ProcessMark(charReader))
+                {
+                    continue;
+                }
+                else if (ProcessArray(charReader))
+                {
+                    continue;
+                }
+                else if (ProcessProcedure(charReader))
                 {
                     continue;
                 }
@@ -402,172 +375,23 @@ namespace EPSSharpie.PostScript
                 {
                     continue;
                 }
-                else if (ProcessProcedure(charReader))
-                {
-                    continue;
-                }
-                else if (ProcessArray(charReader))
-                {
-                    continue;
-                }
                 else
                 {
-                    charReader.ReadChar();
+                    var character = charReader.ReadChar();
+                    if (!IsWhitespace(character))
+                    {
+                        _stringBuilder.Append(character);
+                    }
+                    else
+                    {
+                        FlushTokenBuffer();
+                    }
                 }
-
-
-
-                //if (IsWhitespace(character))
-                //{
-                //    ProcessBuffer(ref continueProcessing);
-                //}
-                //else if (IsBeginArray(character))
-                //{
-                //    ProcessBuffer(ref continueProcessing);
-                //    if (continueProcessing)
-                //    {
-                //        OnToken?.Invoke(Mode.BeginArray, _stringBuilder.ToString(), ref continueProcessing);
-                //    }
-                //}
-                //else if (IsEndArray(character))
-                //{
-                //    ProcessBuffer(ref continueProcessing);
-                //    if (continueProcessing)
-                //    {
-                //        OnToken?.Invoke(Mode.EndArray, _stringBuilder.ToString(), ref continueProcessing);
-                //    }
-                //}
-                //else if (IsBeginProcedure(character))
-                //{
-                //    ProcessBuffer(ref continueProcessing);
-                //    if (continueProcessing)
-                //    {
-                //        OnToken?.Invoke(Mode.BeginProcedure, _stringBuilder.ToString(), ref continueProcessing);
-                //    }
-                //}
-                //else if (IsEndProcedure(character))
-                //{
-                //    ProcessBuffer(ref continueProcessing);
-                //    if (continueProcessing)
-                //    {
-                //        OnToken?.Invoke(Mode.EndProcedure, _stringBuilder.ToString(), ref continueProcessing);
-                //    }
-                //}
-                //else
-                //{
-                //    //_stringBuilder.Append(character);
-                //}
-
             }
+            FlushTokenBuffer();
         }
 
-        private void ProcessComment(string comment)
-        {
-            if (comment.StartsWith("!"))
-            {
-                OnComment?.Invoke(CommentType.Header, comment.Substring(1));
-            }
-            else if (comment.StartsWith("%"))
-            {
-                OnComment?.Invoke(CommentType.DSCComment, comment.Substring(1));
-            }
-            else
-            {
-                OnComment?.Invoke(CommentType.Comment, comment);
-            }
-        }
 
-        public bool GetObject(out ObjectBase objectBase)
-        {
-            //Mode mode = Mode.None;
-            //ObjectBase result = null;
-
-            //var buffer = string.Empty;
-            //bool finished = false;
-            //while (!finished && _input.ReadChar(out var c))
-            //{
-            //    if (c == '\r')
-            //    {
-            //        continue;
-            //    }
-            //    if (mode == Mode.Comment)
-            //    {
-            //        if (IsNewline(c))
-            //        {
-            //            mode = Mode.None;
-            //        }
-            //        continue;
-            //    }
-            //    if (IsWhitespace(c) || IsNewline(c))
-            //    {
-            //        if (mode != Mode.None)
-            //        {
-            //            finished = true;
-            //        }
-            //        continue;
-            //    }
-            //    if (mode != Mode.String && IsComment(c))
-            //    {
-            //        mode = Mode.Comment;
-            //        continue;
-            //    }
-            //    buffer += c;
-
-            //    switch (mode)
-            //    {
-            //        case Mode.None:
-            //            if (IsDigit(c) || IsSign(c))
-            //            {
-            //                mode = Mode.Integer;
-            //            }
-            //            else
-            //            {
-            //                mode = Mode.Name;
-            //            }
-            //            break;
-            //        case Mode.Integer:
-            //            if (c == 'E' || c == '.')
-            //            {
-            //                mode = Mode.Real;
-            //            }
-            //            else if (!IsDigit(c))
-            //            {
-            //                mode = Mode.Name;
-            //            }
-            //            break;
-            //        case Mode.Real:
-            //            if (c == 'E' || c == '.')
-            //            {
-            //                mode = Mode.Name;
-            //            }
-            //            break;
-            //        case Mode.String:
-            //            break;
-            //        case Mode.Array:
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //}
-
-            //switch (mode)
-            //{
-            //    case Mode.Name:
-            //        result = new NameObject(buffer);
-            //        break;
-            //    case Mode.Integer:
-            //        result = new NumericalObject(int.Parse(buffer));
-            //        break;
-            //    case Mode.Real:
-            //        result = new NumericalObject(double.Parse(buffer));
-            //        break;
-            //}
-
-            //objectBase = result;
-
-            //return _input.Position < _input.Length;
-            objectBase = null;
-            return true;
-        }               
+             
     }
 }
