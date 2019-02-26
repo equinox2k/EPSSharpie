@@ -123,18 +123,32 @@ namespace EPSSharpie.PostScript
             }
         }
 
-        private string GetOctalString(CharReader charReader, int numDigits)
+        private string GetOctalString(CharReader charReader)
         {
+            var bytes = new List<byte>();
             var textBuilder = new StringBuilder();
-            for (var i = 0; i < numDigits; i++)
+            while (true)
             {
-                var character = charReader.ReadChar();
-                if (IsOctalDigit(character))
+                var peekedChar = charReader.PeekChar();
+                if (IsOctalDigit(peekedChar))
                 {
-                    textBuilder.Append(character);
+                    textBuilder.Append(charReader.ReadChar());
+                    if (textBuilder.Length == 3)
+                    {
+                        bytes.Add(Convert.ToByte(textBuilder.ToString(), 8));
+                        textBuilder.Clear();
+                    }
+                }
+                else
+                {
+                    break;
                 }
             }
-            return textBuilder.ToString();
+            if (textBuilder.Length > 0)
+            {
+                bytes.Add(Convert.ToByte(textBuilder.ToString(), 8));
+            }
+            return Encoding.UTF8.GetString(bytes.ToArray());
         }
         
         private bool ProcessString(CharReader charReader)
@@ -143,6 +157,7 @@ namespace EPSSharpie.PostScript
             {
                 return false;
             }
+            int bracketCount = 1;
             FlushTokenBuffer();
             charReader.ReadChar();
             var textBuilder = new StringBuilder();
@@ -154,7 +169,7 @@ namespace EPSSharpie.PostScript
                     var peekedChar = charReader.PeekChar();
                     if (IsOctalDigit(peekedChar))
                     {
-                        var octal = GetOctalString(charReader, 3);
+                        var octal = GetOctalString(charReader);
                         var value = Convert.ToInt32(octal, 8);
                         if (value > 255)
                         {
@@ -200,7 +215,15 @@ namespace EPSSharpie.PostScript
                     }
                     throw new Exception("Unexpected escape code.");
                 }
-                else if(character == ')')
+                else if (character == '(')
+                {
+                    bracketCount++;
+                }
+                else if (character == ')' && bracketCount > 1)
+                {
+                    bracketCount--;
+                }
+                else if (character == ')' && bracketCount == 1)
                 {
                     OnToken?.Invoke(Mode.String, textBuilder.ToString());
                     return true;

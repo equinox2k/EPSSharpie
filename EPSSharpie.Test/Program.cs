@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using Ionic.Zlib;
+using System.Text;
 
 namespace EPSSharpie.Test
 {
@@ -33,6 +34,16 @@ namespace EPSSharpie.Test
             //Console.WriteLine(epsDocument.PostScriptData);
 
             var interpreter = new Interpreter();
+
+            //var testData1 = "abc %123123e32323\n123";
+            //interpreter.Load(Encoding.ASCII.GetBytes(testData1));
+
+            //var testData2 = "(Strings may contain special characters *!&}^% and balanced parentheses ( ) (and so on).)";
+            //interpreter.Load(Encoding.ASCII.GetBytes(testData2));
+
+            var testData3 = "(Strings may contain octal e.g. \\11065)";
+            interpreter.Load(Encoding.ASCII.GetBytes(testData3));
+
             interpreter.Load(epsDocument.PostScriptData);
 
 
