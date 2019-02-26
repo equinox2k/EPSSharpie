@@ -39,7 +39,7 @@ namespace EPSSharpie.PostScript
 
         private bool IsWhitespace(char c)
         {
-            return c == ' ' || c == '\t' || c == '\r' || c == '\n';
+            return c == '\0' || c == '\t' || c == '\r' || c == '\n' || c == '\f' || c == ' ';
         }
 
         private bool IsBeginArray(char c)
