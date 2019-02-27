@@ -10,6 +10,7 @@ namespace EPSSharpie.Test
 {
     class Program
     {
+
         static void Main(string[] args)
         {
             var epsData = File.ReadAllBytes("Example.eps");
@@ -41,9 +42,9 @@ namespace EPSSharpie.Test
             //var testData2 = "(Strings may contain special characters *!&}^% and balanced parentheses ( ) (and so on).)";
             //interpreter.Load(Encoding.ASCII.GetBytes(testData2));
 
-            var testData3 = "(Strings may contain octal e.g. \\11065)";
-            interpreter.Load(Encoding.ASCII.GetBytes(testData3));
-
+            //var testData3 = "(Strings may contain octal e.g. \\11065)";
+            //interpreter.Load(Encoding.ASCII.GetBytes(testData3));
+            
             interpreter.Load(epsDocument.PostScriptData);
 
 

@@ -31,72 +31,34 @@ namespace EPSSharpie.PostScript
             HexString,
             Real,
             Name
-           
         }
-
-        private Mode _processMode;
+        
         private StringBuilder _stringBuilder;
 
-        private bool IsWhitespace(char c)
+        static public long BaseDecode(string value, int numBase)
         {
-            return c == '\0' || c == '\t' || c == '\r' || c == '\n' || c == '\f' || c == ' ';
+            const string CharList = "0123456789abcdefghijklmnopqrstuvwxyz";
+            var result = 0L;
+            foreach (char character in value)
+            {
+                result = result * numBase + CharList.IndexOf(character.ToString(), StringComparison.CurrentCultureIgnoreCase);
+            }
+            return result;
         }
 
-        private bool IsBeginArray(char c)
+        private bool IsWhitespace(char character)
         {
-            return c == '[';
+            return character == '\0' || character == '\t' || character == '\r' || character == '\n' || character == '\f' || character == ' ';
         }
 
-        private bool IsEndArray(char c)
+        private bool IsBaseX(char character, int numBase)
         {
-            return c == ']';
-        }
-
-        private bool IsBeginProcedure(char c)
-        {
-            return c == '{';
-        }
-
-        private bool IsEndProcedure(char c)
-        {
-            return c == '}';
-        }
-
-        private bool IsBeginString(char c)
-        {
-            return c == '(';
-        }
-
-        private bool IsEndString(char c)
-        {
-            return c == ')';
+            const string CharList = "0123456789abcdefghijklmnopqrstuvwxyz";
+            var index = CharList.IndexOf(character.ToString(), StringComparison.CurrentCultureIgnoreCase);
+            return index >= 0 && index < numBase;
         }
 
 
-
-        private bool IsDigit(char c)
-        {
-            const string digits = "0123456789";
-            return digits.Contains(c.ToString());
-        }
-
-        private bool IsOctalDigit(char c)
-        {
-            const string digits = "01234567";
-            return digits.Contains(c.ToString());
-        }
-
-        private bool IsHexDigit(char c)
-        {
-            const string digits = "0123456789ABCDEF";
-            return digits.Contains(c.ToString().ToUpper());
-        }
-
-
-        private bool IsSign(char c)
-        {
-            return c == '+' || c == '-';
-        }
 
         private readonly byte[] _input;
 
@@ -107,7 +69,6 @@ namespace EPSSharpie.PostScript
 
         public void Process()
         {
-            _processMode = Mode.None;
             _stringBuilder = new StringBuilder();
             ProcessBuffer(new CharReader(_input));
         }
@@ -130,7 +91,7 @@ namespace EPSSharpie.PostScript
             while (true)
             {
                 var peekedChar = charReader.PeekChar();
-                if (IsOctalDigit(peekedChar))
+                if (IsBaseX(peekedChar, 8))
                 {
                     textBuilder.Append(charReader.ReadChar());
                     if (textBuilder.Length == 3)
@@ -167,15 +128,10 @@ namespace EPSSharpie.PostScript
                 if (character == '\\')
                 {
                     var peekedChar = charReader.PeekChar();
-                    if (IsOctalDigit(peekedChar))
+                    if (IsBaseX(peekedChar, 8))
                     {
-                        var octal = GetOctalString(charReader);
-                        var value = Convert.ToInt32(octal, 8);
-                        if (value > 255)
-                        {
-                            throw new Exception("Invalid octal charcter.");
-                        }
-                        textBuilder.Append(Convert.ToChar((byte)value));
+                        var octalString = GetOctalString(charReader);
+                        textBuilder.Append(octalString);
                         continue;
                     }
                     if (peekedChar == '\\' || peekedChar == '(' || peekedChar == ')')
@@ -257,7 +213,7 @@ namespace EPSSharpie.PostScript
                 {
                     throw new Exception("Unexpected end of data.");
                 }
-                else if (IsHexDigit(character))
+                else if (IsBaseX(character, 16))
                 {
                     textBuilder.Append(character);
                 }
