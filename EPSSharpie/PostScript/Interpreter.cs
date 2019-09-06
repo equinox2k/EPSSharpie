@@ -34,15 +34,8 @@ namespace EPSSharpie.PostScript
             {
                 var third = OperandStack.Pop() as ProcedureObject;
                 var second = OperandStack.Pop() as ProcedureObject;
-                var first = OperandStack.Pop() as BooleanObject;
-                if (first.Value)
-                {
-                    OperandStack.Push(second);
-                }
-                else
-                {
-                    OperandStack.Push(third);
-                }
+                var first = OperandStack.Pop() as BooleanObject;                
+                ExecutionStack.Push(first.Value ? second : third);                
             }));
 
             systemDictionary.Add("pop", new OperandObject(() =>
@@ -70,6 +63,7 @@ namespace EPSSharpie.PostScript
                 objects = objects.Reverse().ToArray();
                 OperandStack.Push(objects);
                 OperandStack.Push(objects);
+                //TODO not accurate to spec
             }));
 
             systemDictionary.Add("clear", new OperandObject(() =>
@@ -190,26 +184,23 @@ namespace EPSSharpie.PostScript
 
             Parser parser = new Parser(input);
             parser.OnToken += Parser_OnToken;
-            parser.Process();
 
-            File.WriteAllText("C:\\Users\\ptribe.PHOTO\\Desktop\\Log.txt", _log.ToString());
-            var a = 1;
-            //while (parser.GetObject(out var objectBase))
-            //{
-            //    if (!objectBase.IsExecutable())
-            //    {
-            //        OperandStack.Push(objectBase);
-            //    }
-            //    else if (objectBase is NameObject)
-            //    {
-            //        var value = DictLookup(objectBase as NameObject);
-            //        value?.Invoke();
-            //    }                
-            //}
+            try
+            {
+                parser.Process();
+            }
+            catch
+            {
+                // error occured;
+            }
+
+            File.WriteAllText("C:\\Users\\ptribe.PHOTO\\Desktop\\Log.txt", _log.ToString());            
         }
         
         private void Parser_OnToken(TokenType tokenType, string value)
         {
+            _log.AppendLine($"{tokenType} - {value}");
+
             try
             {
                 if (tokenType == TokenType.Real)
@@ -260,7 +251,7 @@ namespace EPSSharpie.PostScript
                             }
                             break;
                         }
-                        items.Insert(0, currentOperand);
+                        items.Add(currentOperand);
                     }
                     OperandStack.Push(new ProcedureObject(items.ToArray()));
                     _procedureCount--;
@@ -283,7 +274,7 @@ namespace EPSSharpie.PostScript
                             }
                             break;
                         }
-                        items.Insert(0, currentOperand);
+                        items.Add(currentOperand);
                     }
                     OperandStack.Push(new ArrayObject(items.ToArray()));
                 }
@@ -313,64 +304,50 @@ namespace EPSSharpie.PostScript
 
                 if (ShouldRun(OperandStack.Top()))
                 {
-                    Run(OperandStack.Pop());
+                    ExecutionStack.Push(OperandStack.Pop());
+                    Run();
                 }
             }
             catch (Exception ex)
             {
-                var a = 1;
-                //throw;
+                _log.AppendLine($"Exception: {ex}");
+                throw;
             }
-
-            _log.AppendLine($"{tokenType} - {value}");
-            Console.WriteLine($"{tokenType} - {value}");
         }
 
         private bool ShouldRun(ObjectBase objectBase)
         {
-            bool shouldRun = false;
-            if (_procedureCount <= 0)
-            {
-                if (objectBase is ExecutableName)
-                {
-                    shouldRun = true;
-                }
-                else if (objectBase is OperandObject)
-                {
-                    shouldRun = true;
-                }
-                else if (objectBase is ProcedureObject)
-                {
-                    shouldRun = true;
-                }
-            }
-            return shouldRun;
+            return _procedureCount <= 0 && objectBase is ExecutableName;            
         }
 
-        private void Run(ObjectBase objectBase)
+        private void Run()
         {
-            if (objectBase is ExecutableName executableName)
+            while (ExecutionStack.Count > 0)
             {
-                if (!DictionaryStack.ContainsKey(executableName.Value))
+                var objectBase = ExecutionStack.Pop();
+                if (objectBase is ExecutableName executableName)
                 {
-                    throw new Exception("Command not found");
+                    if (!DictionaryStack.ContainsKey(executableName.Value))
+                    {
+                        throw new Exception("Command not found");
+                    }
+                    ExecutionStack.Push(DictionaryStack[executableName.Value]);
                 }
-                Run(DictionaryStack[executableName.Value]);
-            }
-            else if (objectBase is OperandObject operandObject)
-            {
-                operandObject.Value();
-            }
-            else if (objectBase is ProcedureObject procedureObject)
-            {
-                foreach (var item in procedureObject.Value)
+                else if (objectBase is OperandObject operandObject)
                 {
-                    Run(item);
+                    operandObject.Value();
                 }
-            }
-            else
-            {
-                OperandStack.Push(objectBase);
+                else if (objectBase is ProcedureObject procedureObject)
+                {
+                    foreach (var item in procedureObject.Value)
+                    {
+                        ExecutionStack.Push(item);
+                    }
+                }
+                else
+                {
+                    OperandStack.Push(objectBase);
+                }
             }
         }
 

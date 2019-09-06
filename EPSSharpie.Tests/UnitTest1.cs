@@ -73,9 +73,9 @@ namespace EPSSharpie.Tests
             interpreter.Load(psData);
             Assert.Single(interpreter.OperandStack);
             var value = interpreter.OperandStack.Pop();
-            Assert.IsAssignableFrom<BooleanObject>(value);
-            var booleanObject = value as BooleanObject;
-            Assert.False(booleanObject.Value);
+            Assert.IsAssignableFrom<NumericalObject>(value);
+            var numericalObject = value as NumericalObject;
+            Assert.Equal(10, (int)numericalObject.Value);
         }
 
         [Fact]
