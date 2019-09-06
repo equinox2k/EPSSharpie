@@ -4,9 +4,8 @@ using System.Text;
 
 namespace EPSSharpie.PostScript.Objects
 {
-    internal abstract class ObjectBase : IObjectBase
-    {        
-
+    public abstract class ObjectBase : IObjectBase
+    {
         public ObjectFlag Flag { get; internal set; }
         public ObjectAccess Access { get; internal set; }
 

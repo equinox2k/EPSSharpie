@@ -4,9 +4,9 @@ using System.Text;
 
 namespace EPSSharpie.PostScript.Objects
 {
-    internal class OperandObject : ObjectBase
+    public class OperandObject : ObjectBase
     {
-        public Action Value { get; internal set; }
+        public Action Value { get; private set; }
 
         public OperandObject(Action value)
         {

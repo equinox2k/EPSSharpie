@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Test001.ps" />
+    <None Remove="Resources\Test002.ps" />
+    <None Remove="Resources\Test003.ps" />
+    <None Remove="Resources\Test099.ps" />
+    <None Remove="Resources\Test100.eps" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Test099.ps" />
+    <EmbeddedResource Include="Resources\Test003.ps" />
+    <EmbeddedResource Include="Resources\Test100.eps">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Test001.ps" />
+    <EmbeddedResource Include="Resources\Test002.ps" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-dev002919" />
+    <PackageReference Include="xunit" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EPSSharpie\EPSSharpie.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DecodeTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

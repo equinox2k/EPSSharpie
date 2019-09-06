@@ -6,32 +6,30 @@ using EPSSharpie.PostScript.Objects;
 
 namespace EPSSharpie.PostScript
 {
+    public enum TokenType
+    {
+        None,
+        BeginDictionary,
+        EndDictionary,
+        BeginArray,
+        EndArray,
+        BeginProcedure,
+        EndProcedure,
+        XPacket,
+        Comment,
+
+        Integer,
+        String,
+        HexString,
+        Real,
+        Name
+    }
 
     class Parser
     {
 
-        public delegate void TokenEvent(Mode mode, string token);
-        public event TokenEvent OnToken;
-
-        public enum Mode
-        {
-            None,
-            Token,
-            BeginMark,
-            EndMark,
-            BeginArray,
-            EndArray,
-            BeginProcedure,
-            EndProcedure,
-            XPacket,
-            Comment,
-
-            Integer,
-            String,
-            HexString,
-            Real,
-            Name
-        }
+        public delegate void TokenEvent(TokenType tokenType, string token);
+        public event TokenEvent OnToken;      
         
         private StringBuilder _stringBuilder;
 
@@ -79,7 +77,19 @@ namespace EPSSharpie.PostScript
         {
             if (_stringBuilder.Length > 0)
             {
-                OnToken?.Invoke(Mode.Token, _stringBuilder.ToString());
+                var value = _stringBuilder.ToString();
+                if (long.TryParse(value, out _))
+                {
+                    OnToken?.Invoke(TokenType.Integer, value);
+                }
+                else if (float.TryParse(value, out _))
+                {
+                    OnToken?.Invoke(TokenType.Real, value);
+                }
+                else
+                {
+                    OnToken?.Invoke(TokenType.Name, value);
+                }
                 _stringBuilder.Clear();
             }
         }
@@ -181,7 +191,7 @@ namespace EPSSharpie.PostScript
                 }
                 else if (character == ')' && bracketCount == 1)
                 {
-                    OnToken?.Invoke(Mode.String, textBuilder.ToString());
+                    OnToken?.Invoke(TokenType.String, textBuilder.ToString());
                     return true;
                 }
                 else if (character == '\0')
@@ -206,7 +216,7 @@ namespace EPSSharpie.PostScript
                 var character = charReader.ReadChar();
                 if (character == '>')
                 {
-                    OnToken?.Invoke(Mode.HexString, textBuilder.ToString());
+                    OnToken?.Invoke(TokenType.HexString, textBuilder.ToString());
                     return true;
                 }
                 else if (character == '\0')
@@ -242,7 +252,7 @@ namespace EPSSharpie.PostScript
                 var line = charReader.ReadLine();
                 if (line.Equals("<?xpacket end=\"w\"?>"))
                 {
-                    OnToken?.Invoke(Mode.XPacket, textBuilder.ToString());
+                    OnToken?.Invoke(TokenType.XPacket, textBuilder.ToString());
                     return true;
                 }
                 else if (!string.IsNullOrEmpty(line))
@@ -252,20 +262,20 @@ namespace EPSSharpie.PostScript
             }        
         }
 
-        private bool ProcessMark(CharReader charReader)
+        private bool ProcessDictionary(CharReader charReader)
         {
             if (charReader.PeekString(2) == "<<")
             {
                 FlushTokenBuffer();
                 charReader.ReadString(2);
-                OnToken?.Invoke(Mode.BeginArray, "");
+                OnToken?.Invoke(TokenType.BeginDictionary, "");
                 return true;
             }
             if (charReader.PeekString(2) == ">>")
             {
                 FlushTokenBuffer();
                 charReader.ReadString(2);
-                OnToken?.Invoke(Mode.EndArray, "");
+                OnToken?.Invoke(TokenType.EndDictionary, "");
                 return true;
             }
             return false;
@@ -277,14 +287,14 @@ namespace EPSSharpie.PostScript
             {
                 FlushTokenBuffer();
                 charReader.ReadChar();
-                OnToken?.Invoke(Mode.BeginArray, "");
+                OnToken?.Invoke(TokenType.BeginArray, "");
                 return true;
             }
             if (charReader.PeekChar() == ']')
             {
                 FlushTokenBuffer();
                 charReader.ReadChar();
-                OnToken?.Invoke(Mode.EndArray, "");
+                OnToken?.Invoke(TokenType.EndArray, "");
                 return true;
             }
             return false;
@@ -296,14 +306,14 @@ namespace EPSSharpie.PostScript
             {
                 FlushTokenBuffer();
                 charReader.ReadChar();
-                OnToken?.Invoke(Mode.BeginProcedure, "");
+                OnToken?.Invoke(TokenType.BeginProcedure, "");
                 return true;
             }
             if (charReader.PeekChar() == '}')
             {
                 FlushTokenBuffer();
                 charReader.ReadChar();
-                OnToken?.Invoke(Mode.EndProcedure, "");
+                OnToken?.Invoke(TokenType.EndProcedure, "");
                 return true;
             }
             return false;
@@ -316,16 +326,14 @@ namespace EPSSharpie.PostScript
                 return false;
             }
             FlushTokenBuffer();
-            OnToken?.Invoke(Mode.Comment, charReader.ReadLine().Substring(1));
+            OnToken?.Invoke(TokenType.Comment, charReader.ReadLine().Substring(1));
             return true;
         }
 
         private void ProcessBuffer(CharReader charReader)
         {
-            var test = string.Empty;
             while (charReader.PeekChar() != '\0')
             {
-
                 if (ProcessComment(charReader))
                 {
                     continue;
@@ -334,7 +342,7 @@ namespace EPSSharpie.PostScript
                 {
                     continue;
                 }
-                else if (ProcessMark(charReader))
+                else if (ProcessDictionary(charReader))
                 {
                     continue;
                 }

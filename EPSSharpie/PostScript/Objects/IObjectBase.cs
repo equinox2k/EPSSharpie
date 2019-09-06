@@ -7,7 +7,7 @@ namespace EPSSharpie.PostScript.Objects
     public enum ObjectFlag
     {
         Literal,
-        Executable,
+        Executable
     }
 
     public enum ObjectAccess
@@ -18,12 +18,10 @@ namespace EPSSharpie.PostScript.Objects
         None,
     }
 
-    interface IObjectBase
+    public interface IObjectBase
     {
-
         ObjectFlag Flag { get; }
         ObjectAccess Access { get; }
-
         bool IsExecutable();
     }
 }

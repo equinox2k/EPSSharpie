@@ -4,11 +4,11 @@ using System.Text;
 
 namespace EPSSharpie.PostScript.Objects
 {
-    public class StringObject : ObjectBase
+    public class BooleanObject : ObjectBase
     {
-        public string Value { get; private set; }
+        public bool Value { get; private set; }
 
-        public StringObject(string value)
+        public BooleanObject(bool value)
         {
             Value = value;
         }

@@ -4,11 +4,11 @@ using System.Text;
 
 namespace EPSSharpie.PostScript.Objects
 {
-    public class StringObject : ObjectBase
+    public class ExecutableName : ObjectBase
     {
         public string Value { get; private set; }
 
-        public StringObject(string value)
+        public ExecutableName(string value)
         {
             Value = value;
         }
